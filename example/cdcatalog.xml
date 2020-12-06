@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="cdcatalog.xsl"?>
+<catalog>
+  <cd>
+    <title>Empire Burlesque</title>
+    <artist>Bob Dylan</artist>
+    <country>USA</country>
+    <company>Columbia</company>
+    <price>10.90</price>
+    <year>1985</year>
+   </cd>
+   <cd>
+    <title>Highway to Hell</title>
+    <artist>ACDC</artist>
+    <country>Australia</country>
+    <company>Columbia</company>
+    <price>12.90</price>
+    <year>1985</year>
+  </cd>
+  <cd>
+    <title>Das Ziel ist im Weg</title>
+    <artist>Mine</artist>
+    <country>Germany</country>
+    <company>Pennywine Records</company>
+    <price>14.90</price>
+    <year>2016</year>
+  </cd>
+</catalog> 
