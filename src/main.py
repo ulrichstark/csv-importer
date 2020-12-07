@@ -4,7 +4,7 @@ testFilePath = "../example/regex_test.csv"
 
 importer = Importer()
 
-importer.importCSVFile(testFilePath)
-importer.importCSVFile(testFilePath)
+importer.importCSVFile(testFilePath, headerPresent=False)
+importer.importCSVFile(testFilePath, headerPresent=False)
 
-importer.export("sample_export.csv", newline="")
+importer.exportCSVFile("sample_export.csv", "utf-8", ",")
