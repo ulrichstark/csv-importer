@@ -1,4 +1,5 @@
 import pandas
+from dialect import Dialect
 
 
 class Importer:
@@ -8,9 +9,15 @@ class Importer:
     def __init__(self):
         self.reset()
 
-    def importCSVFile(self, filePath: str, encoding: str, headerPresent: bool):
-        header = "infer" if headerPresent else None
-        dataFrame = pandas.read_csv(filePath, encoding=encoding, header=header)
+    def importCSVFile(self, filePath: str, dialect: Dialect):
+        header = "infer" if dialect.hasHeader else None
+        dataFrame = pandas.read_csv(
+            filePath,
+            sep=dialect.sepChar,
+            quotechar=dialect.quoteChar,
+            encoding=dialect.encoding,
+            header=header
+        )
         columnCount = len(dataFrame.columns)
 
         if self.__dataFrame is None:

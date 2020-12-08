@@ -1,10 +1,13 @@
 from importer import Importer
+from dialect import Dialect
 
 testFilePath = "../example/regex_test.csv"
 
 importer = Importer()
 
-importer.importCSVFile(testFilePath, encoding="utf-8", headerPresent=True)
-importer.importCSVFile(testFilePath, encoding="utf-8", headerPresent=False)
+dialect = Dialect(testFilePath)
+
+importer.importCSVFile(testFilePath, dialect)
+importer.importCSVFile(testFilePath, dialect)
 
 importer.exportCSVFile("sample_export.csv", "utf-8", ",")
