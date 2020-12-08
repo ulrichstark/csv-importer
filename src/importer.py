@@ -30,21 +30,17 @@ class Importer:
 
             self.__dataFrame = self.__dataFrame.append(dataFrame)
 
-    def exportLists(self):
+    def getDictionary(self):
         pass
 
-    def exportNumPyArray(self):
+    def getLists(self):
         pass
 
-    def exportDataFrame(self):
+    def getNumPyArray(self):
+        pass
+
+    def getDataFrame(self):
         return self.__dataFrame
-
-    def exportCSVFile(self, filePath: str, encoding: str, seperator: str):
-        self.__dataFrame.to_csv(
-            filePath, index=False, encoding=encoding, sep=seperator)
-
-    def exportXMLFile(self):
-        pass
 
     def reset(self):
         self.__dataFrame = None
