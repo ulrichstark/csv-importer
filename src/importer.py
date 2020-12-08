@@ -1,5 +1,3 @@
-import csv
-import chardet
 import pandas
 
 
@@ -10,28 +8,8 @@ class Importer:
     def __init__(self):
         self.reset()
 
-    def __detectFileEncoding(self, filePath: str):
-        with open(filePath, "rb") as testFile:
-            testFileContent = testFile.read()
-            chardetAnswer = chardet.detect(testFileContent)
-            return chardetAnswer["encoding"]
-
-    def __isHeaderPresent(self, filePath: str):
-        with open(filePath, "r") as testFile:
-            firstLine = testFile.readline()
-            return csv.Sniffer().has_header(firstLine)
-
-    def importCSVFile(self, filePath: str, encoding: str = None, headerPresent: bool = None):
-        if encoding is None:
-            encoding = self.__detectFileEncoding(filePath)
-            print("Guessed encoding: " + encoding)
-
-        if headerPresent is None:
-            headerPresent = self.__isHeaderPresent(filePath)
-            print("Guessed headerPresent: " + str(headerPresent))
-
+    def importCSVFile(self, filePath: str, encoding: str, headerPresent: bool):
         header = "infer" if headerPresent else None
-
         dataFrame = pandas.read_csv(filePath, encoding=encoding, header=header)
         columnCount = len(dataFrame.columns)
 
