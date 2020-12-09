@@ -11,11 +11,11 @@ def encoding(filePath: str):
 
 def hasHeader(filePath: str):
     with open(filePath, "r") as testFile:
-        firstLine = testFile.readline()
-        return csv.Sniffer().has_header(firstLine)
+        testFileContent = testFile.read()
+        return csv.Sniffer().has_header(testFileContent)
 
 
 def dialect(filePath: str):
     with open(filePath, "r") as testFile:
-        firstLine = testFile.readline()
-        return csv.Sniffer().sniff(firstLine)
+        testFileContent = testFile.read()
+        return csv.Sniffer().sniff(testFileContent)
