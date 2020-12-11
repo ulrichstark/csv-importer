@@ -6,10 +6,13 @@ testFilePath = "../example/regex_test.csv"
 
 importer = Importer()
 
-dialect = Dialect(testFilePath)
+importer.importCSVFile("../example/regex_test.csv",
+                       Dialect("../example/regex_test.csv"))
 
-importer.importCSVFile(testFilePath, dialect)
-importer.importCSVFile(testFilePath, dialect)
+importer.importCSVFile("../example/regex_test_mit_header.csv",
+                       Dialect("../example/regex_test_mit_header.csv"))
+
+print(importer.getDataFrame())
 
 exporter = Exporter(importer)
 
