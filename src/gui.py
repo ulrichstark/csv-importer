@@ -1,9 +1,9 @@
-from dialect import Dialect
 from importer import Importer
+from importFrame import ImportFrame
 from tkinter import *
 from tkinter.filedialog import *
 from tkinter.messagebox import *
-from pandastable import Table
+from pandastable import Table, TableModel
 
 
 class GUI:
@@ -17,62 +17,58 @@ class GUI:
             text="Import file(s)",
             command=self.onImportButtonClick
         )
-        self.importButton.grid(row=0, column=0)
+        self.importButton.pack(pady=20)
 
-        self.varEncoding = StringVar()
-        self.labelEncoding = Label(self.window, text="Encoding: ")
-        self.labelEncoding.grid(row=1, column=0, sticky="E")
-        self.entryEncoding = Entry(
-            self.window, width=10, textvariable=self.varEncoding)
-        self.entryEncoding.grid(row=1, column=1, sticky="W")
+        self.importsFrame = Frame(self.window)
+        self.importsFrame.pack(fill=X, padx=10, pady=5)
 
-        self.varHasHeader = IntVar()
-        self.labelHasHeader = Label(self.window, text="Has Header: ")
-        self.labelHasHeader.grid(row=2, column=0, sticky="E")
-        self.checkbuttonHasHeader = Checkbutton(
-            self.window, variable=self.varHasHeader)
-        self.checkbuttonHasHeader.grid(row=2, column=1, sticky="W")
+        self.previewFrame = Frame(self.window)
+        self.previewFrame.pack(fill=X, padx=10, pady=5)
 
-        self.varSepChar = StringVar()
-        self.labelSepChar = Label(self.window, text="Seperator Character: ")
-        self.labelSepChar.grid(row=3, column=0, sticky="E")
-        self.entrySepChar = Entry(
-            self.window, width=4, textvariable=self.varSepChar)
-        self.entrySepChar.grid(row=3, column=1, sticky="W")
+        self.table = Table(self.previewFrame)
 
-        self.varQuoteChar = StringVar()
-        self.labelQuoteChar = Label(self.window, text="Quote Character: ")
-        self.labelQuoteChar.grid(row=4, column=0, sticky="E")
-        self.entryQuoteChar = Entry(
-            self.window, width=4, textvariable=self.varQuoteChar)
-        self.entryQuoteChar.grid(row=4, column=1, sticky="W")
+        self.importFrameList = []
 
         self.window.mainloop()
 
     def onImportButtonClick(self):
-        selectedFileName = askopenfilename(initialdir="../example")
+        filePathList = askopenfilenames(initialdir="../example")
 
-        if selectedFileName is not None:
-            if selectedFileName.endswith(".csv"):
-                guessedDialect = Dialect(selectedFileName)
-                self.applyDialect(guessedDialect)
+        for filePath in filePathList:
+            self.importFile(filePath)
 
-                importer = Importer()
-                importer.importCSVFile(selectedFileName, guessedDialect)
+        if len(self.importFrameList) > 0:
+            self.updatePreview()
 
-                dataFrame = importer.getDataFrame()
-                print(dataFrame)
-                Table(self.window, dataframe=dataFrame)
-            else:
-                showerror(
-                    message=f"Your selected file '{selectedFileName}' is not a csv file!"
-                )
+    def onRemoveImportFrame(self, importFrame: ImportFrame):
+        importFrame.frame.destroy()
+        
+        self.importFrameList.remove(importFrame)
+        self.updatePreview()
 
-    def applyDialect(self, dialect: Dialect):
-        self.varEncoding.set(dialect.encoding)
-        self.varHasHeader.set(dialect.hasHeader)
-        self.varSepChar.set(dialect.sepChar)
-        self.varQuoteChar.set(dialect.quoteChar)
+    def importFile(self, filePath: str):
+        if filePath.endswith(".csv"):
+            importFrame = ImportFrame(self, filePath)
+            self.importFrameList.append(importFrame)
+        else:
+            showerror(message=f"Your selected file '{filePath}' is not a csv file!")
+
+    def updatePreview(self):
+        importer = Importer()
+
+        for importFrame in self.importFrameList:
+            try:
+                importer.importCSVFile(importFrame.filePath, importFrame.dialect)
+                importFrame.clearError()
+            except Exception as error:
+                importFrame.setError(str(error))
+
+        dataFrame = importer.getDataFrame()
+
+        if dataFrame is not None:
+            tableModel = TableModel(dataFrame)
+            self.table.show()
+            self.table.updateModel(tableModel)
 
 
 if __name__ == "__main__":
