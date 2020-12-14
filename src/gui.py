@@ -61,7 +61,8 @@ class GUI:
                 importer.importCSVFile(importFrame.filePath, importFrame.dialect)
                 importFrame.clearError()
             except Exception as error:
-                importFrame.setError(str(error))
+                errorMessage = error.__class__.__name__ + ": " + str(error)
+                importFrame.setError(errorMessage)
 
         dataFrame = importer.getDataFrame()
 
