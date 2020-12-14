@@ -1,4 +1,5 @@
 import pandas
+import guess
 from dialect import Dialect
 
 
@@ -19,6 +20,10 @@ class Importer:
             header=header
         )
 
+        if dialect.hasHeader is False:
+            newColumns = guess.headerNames(dataFrame)
+            dataFrame.rename(columns=newColumns, inplace=True)
+
         if self.__dataFrame is None:
             self.__dataFrame = dataFrame
         else:
@@ -27,13 +32,13 @@ class Importer:
 
             if not self.__headerSeen and dialect.hasHeader:
                 # Aktueller DataFrame erhält Header der neu zu importierenden Datei
-                newCols = {x: y for x, y in zip(self.__dataFrame, dataFrame)}
-                self.__dataFrame = self.__dataFrame.rename(columns=newCols)
+                newColumns = {x: y for x, y in zip(self.__dataFrame, dataFrame)}
+                self.__dataFrame.rename(columns=newColumns, inplace=True)
 
             if self.__headerSeen and not dialect.hasHeader:
                 # Aktuell zu importierende Datei erhält Header des bisherigen DataFrames
-                newCols = {x: y for x, y in zip(dataFrame, self.__dataFrame)}
-                dataFrame = dataFrame.rename(columns=newCols)
+                newColumns = {x: y for x, y in zip(dataFrame, self.__dataFrame)}
+                dataFrame.rename(columns=newColumns, inplace=True)
 
             self.__dataFrame = self.__dataFrame.append(dataFrame)
 
