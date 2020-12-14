@@ -28,6 +28,7 @@ class GUI:
         self.table = Table(self.previewFrame)
 
         self.importFrameList = []
+        self.isTableShown = False
 
         self.window.mainloop()
 
@@ -66,11 +67,14 @@ class GUI:
 
         dataFrame = importer.getDataFrame()
 
+        if self.isTableShown is False:
+            self.isTableShown = True
+            self.table.show()
+
         if dataFrame is not None:
             tableModel = TableModel(dataFrame)
-            self.table.show()
             self.table.updateModel(tableModel)
-
+            self.table.redraw()
 
 if __name__ == "__main__":
     GUI()
