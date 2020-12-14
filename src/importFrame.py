@@ -34,14 +34,6 @@ class ImportFrame:
         self.entryQuoteChar = Entry(self.frame, width=4, textvariable=self.varQuoteChar)
         self.entryQuoteChar.grid(row=3, column=1, sticky="W")
 
-        self.resetDialect()
-
-        varTracer = lambda var, index, mode: self.onFieldChange()
-        self.varEncoding.trace("w", varTracer)
-        self.varHasHeader.trace("w", varTracer)
-        self.varSepChar.trace("w", varTracer)
-        self.varQuoteChar.trace("w", varTracer)
-
         self.buttonReset = Button(
             self.frame,
             text="Reset Dialect",
@@ -59,18 +51,36 @@ class ImportFrame:
         self.errorMessage = StringVar()
         self.labelError = Label(self.frame, textvariable=self.errorMessage, fg="red")
         self.labelError.grid(row=5, column=0, columnspan=2)
+
+        self.resetDialect()
+        self.setupVarTracer()
+
+    def setupVarTracer(self):
+        varTracer = lambda var, index, mode: self.onFieldChange()
+        self.varEncoding.trace("w", varTracer)
+        self.varHasHeader.trace("w", varTracer)
+        self.varSepChar.trace("w", varTracer)
+        self.varQuoteChar.trace("w", varTracer)
+
+        self.isTraceActive = True
     
     def onFieldChange(self):
-        self.updateDialect()
-        self.gui.updatePreview()
+        if self.isTraceActive:
+            self.updateDialect()
+            self.gui.updatePreview()
 
     def resetDialect(self):
+        self.isTraceActive = False
+
         self.dialect = Dialect(self.filePath)
 
         self.varEncoding.set(self.dialect.encoding)
         self.varHasHeader.set(self.dialect.hasHeader)
         self.varSepChar.set(self.dialect.sepChar)
         self.varQuoteChar.set(self.dialect.quoteChar)
+
+        self.isTraceActive = True
+        self.onFieldChange()
 
 
     def updateDialect(self):
