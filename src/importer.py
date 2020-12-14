@@ -4,7 +4,6 @@ from dialect import Dialect
 
 class Importer:
     __dataFrame: pandas.DataFrame
-    __columnCount: int
     __headerSeen: bool
 
     def __init__(self):
@@ -19,15 +18,12 @@ class Importer:
             encoding=dialect.encoding,
             header=header
         )
-        columnCount = len(dataFrame.columns)
 
         if self.__dataFrame is None:
             self.__dataFrame = dataFrame
-            self.__columnCount = columnCount
         else:
-            if self.__columnCount is not columnCount:
-                raise ValueError(
-                    "Column count does not match already imported rows")
+            if len(self.__dataFrame.columns) is not len(dataFrame.columns):
+                raise ValueError("Column count does not match already imported rows")
 
             if not self.__headerSeen and dialect.hasHeader:
                 # Aktueller DataFrame erhält Header der neu zu importierenden Datei
