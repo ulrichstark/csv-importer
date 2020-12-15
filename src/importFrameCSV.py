@@ -1,8 +1,9 @@
 from tkinter import *
 from dialect import Dialect
+from importer import Importer
 
 
-class ImportFrame:
+class ImportFrameCSV:
     def __init__(self, gui, filePath: str):
         self.gui = gui
         self.filePath = filePath
@@ -40,14 +41,14 @@ class ImportFrame:
             text="Reset Dialect",
             command=self.resetDialect
         )
-        self.buttonReset.grid(row=4, column=0)
+        self.buttonReset.grid(row=4, column=0, padx=8, pady=4)
 
         self.buttonRemove = Button(
             self.frame,
             text="Remove Import",
             command=lambda: gui.onRemoveImportFrame(self)
         )
-        self.buttonRemove.grid(row=4, column=1)
+        self.buttonRemove.grid(row=4, column=1, padx=8, pady=4)
 
         self.errorMessage = StringVar()
         self.labelError = Label(self.frame, textvariable=self.errorMessage, fg="red")
@@ -55,6 +56,9 @@ class ImportFrame:
 
         self.resetDialect()
         self.setupVarTracer()
+
+    def importFile(self, importer: Importer):
+        importer.importCSVFile(self.filePath, self.dialect)
 
     def setupVarTracer(self):
         varTracer = lambda var, index, mode: self.onFieldChange()

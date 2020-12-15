@@ -1,5 +1,6 @@
 from importer import Importer
-from importFrame import ImportFrame
+from importFrameCSV import ImportFrameCSV
+from importFrameXML import ImportFrameXML
 from tkinter import *
 from tkinter.filedialog import *
 from tkinter.messagebox import *
@@ -41,7 +42,7 @@ class GUI:
         if len(self.importFrameList) > 0:
             self.updatePreview()
 
-    def onRemoveImportFrame(self, importFrame: ImportFrame):
+    def onRemoveImportFrame(self, importFrame):
         importFrame.frame.destroy()
         
         self.importFrameList.remove(importFrame)
@@ -49,7 +50,10 @@ class GUI:
 
     def importFile(self, filePath: str):
         if filePath.endswith(".csv"):
-            importFrame = ImportFrame(self, filePath)
+            importFrame = ImportFrameCSV(self, filePath)
+            self.importFrameList.append(importFrame)
+        elif filePath.endswith(".xml"):
+            importFrame = ImportFrameXML(self, filePath)
             self.importFrameList.append(importFrame)
         else:
             showerror(message=f"Your selected file '{filePath}' is not a csv file!")
@@ -59,7 +63,7 @@ class GUI:
 
         for importFrame in self.importFrameList:
             try:
-                importer.importCSVFile(importFrame.filePath, importFrame.dialect)
+                importFrame.importFile(importer)
                 importFrame.clearError()
             except Exception as error:
                 errorMessage = error.__class__.__name__ + ": " + str(error)
