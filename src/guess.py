@@ -11,16 +11,12 @@ def encoding(filePath: str):
         return chardetAnswer["encoding"]
 
 
-def hasHeader(filePath: str):
-    with open(filePath, "r") as testFile:
-        testFileContent = testFile.read()
-        return csv.Sniffer().has_header(testFileContent)
+def hasHeader(sample: str):
+    return csv.Sniffer().has_header(sample)
 
 
-def dialect(filePath: str):
-    with open(filePath, "r") as testFile:
-        testFileContent = testFile.read()
-        return csv.Sniffer().sniff(testFileContent)
+def dialect(sample: str):
+    return csv.Sniffer().sniff(sample)
 
 regexEMail = re.compile(r"^[a-zA-Z0-9_.-]+@[a-zA-Z0-9.-]+.[a-z.]{2,6}$")
 regexDate = re.compile(r"^[0-3]?[0-9][/.][0-3]?[0-9][/.](?:[0-9]{2})?[0-9]{2}$")

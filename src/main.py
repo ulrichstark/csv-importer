@@ -2,15 +2,15 @@ from importer import Importer
 from exporter import Exporter
 from dialect import Dialect
 
-testFilePath = "../example/regex_test.csv"
-
 importer = Importer()
 
-importer.importCSVFile("../example/regex_test.csv",
-                       Dialect("../example/regex_test.csv"))
+def importCSV(filePath: str):
+    dialect = Dialect()
+    dialect.guessFromFile(filePath)
+    importer.importCSVFile(filePath, dialect)
 
-importer.importCSVFile("../example/regex_test_mit_header.csv",
-                       Dialect("../example/regex_test_mit_header.csv"))
+importCSV("../example/regex_test.csv")
+importCSV("../example/regex_test_mit_header.csv")
 
 print(importer.getDataFrame())
 

@@ -6,6 +6,7 @@ class ImportFrame:
     def __init__(self, gui, filePath: str):
         self.gui = gui
         self.filePath = filePath
+        self.dialect = Dialect()
 
         self.frame = LabelFrame(gui.importsFrame, text=filePath)
         self.frame.pack(fill=X, padx=10, pady=5)
@@ -72,7 +73,7 @@ class ImportFrame:
     def resetDialect(self):
         self.isTraceActive = False
 
-        self.dialect = Dialect(self.filePath)
+        self.dialect.guessFromFile(self.filePath)
 
         self.varEncoding.set(self.dialect.encoding)
         self.varHasHeader.set(self.dialect.hasHeader)

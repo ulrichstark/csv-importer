@@ -7,15 +7,17 @@ class Dialect:
     sepChar: str = ","
     quoteChar: str = "\""
 
-    def __init__(self, filePath: str = None):
-        if filePath is not None:
-            self.guessFromFile(filePath)
-
     def guessFromFile(self, filePath: str):
         self.encoding = guess.encoding(filePath)
-        self.hasHeader = guess.hasHeader(filePath)
 
-        dialect = guess.dialect(filePath)
+        with open(filePath, "r") as testFile:
+            testFileContent = testFile.read()
+            self.guessFromSample(testFileContent)
+
+    def guessFromSample(self, sample: str):
+        self.hasHeader = guess.hasHeader(sample)
+
+        dialect = guess.dialect(sample)
         if dialect is not None:
             self.sepChar = dialect.delimiter
             self.quoteChar = dialect.quotechar
