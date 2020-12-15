@@ -1,5 +1,7 @@
 import pandas
 import guess
+from io import StringIO
+from lxml import etree
 from dialect import Dialect
 
 
@@ -10,10 +12,25 @@ class Importer:
     def __init__(self):
         self.reset()
 
-    def importCSVFile(self, filePath: str, dialect: Dialect):
+    def importXMLFile(self, xmlFilePath: str, xslFilePath: str, xslParameters = {}):
+        xmlFile = etree.parse(xmlFilePath)
+        xslFile = etree.parse(xslFilePath)
+        transformer = etree.XSLT(xslFile)
+
+        transformedOutput = str(transformer(xmlFile, **xslParameters))
+
+        dialect = Dialect()
+        dialect.guessFromSample(transformedOutput)
+
+        buffer = StringIO(transformedOutput)
+
+        self.importCSVFile(buffer, dialect)
+
+
+    def importCSVFile(self, filePathOrBuffer: str, dialect: Dialect):
         header = "infer" if dialect.hasHeader else None
         dataFrame = pandas.read_csv(
-            filePath,
+            filePathOrBuffer,
             sep=dialect.sepChar,
             quotechar=dialect.quoteChar,
             encoding=dialect.encoding,
@@ -24,7 +41,7 @@ class Importer:
             newColumns = guess.headerNames(dataFrame)
             dataFrame.rename(columns=newColumns, inplace=True)
 
-        if self.__dataFrame is None:
+        if self.__dataFrame.empty:
             self.__dataFrame = dataFrame
         else:
             if len(self.__dataFrame.columns) is not len(dataFrame.columns):
@@ -58,6 +75,5 @@ class Importer:
         return self.__dataFrame
 
     def reset(self):
-        self.__dataFrame = None
-        self.__columnCount = 0
+        self.__dataFrame = pandas.DataFrame()
         self.__headerSeen = False

@@ -9,8 +9,10 @@ def importCSV(filePath: str):
     dialect.guessFromFile(filePath)
     importer.importCSVFile(filePath, dialect)
 
-importCSV("../example/regex_test.csv")
-importCSV("../example/regex_test_mit_header.csv")
+# importCSV("../example/regex_test.csv")
+# importCSV("../example/regex_test_mit_header.csv")
+
+importer.importXMLFile("../example/cdcatalog.xml", "../example/cdcatalog2csv.xsl", {"sep": "';'"})
 
 print(importer.getDataFrame())
 
