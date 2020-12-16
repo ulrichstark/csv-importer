@@ -63,13 +63,16 @@ class Importer:
             self.__headerSeen = True
 
     def getDictionary(self):
-        pass
+        return self.__dataFrame.to_dict(orient="list")
 
     def getLists(self):
-        pass
+        lists = self.__dataFrame.values.tolist()
+        headerNames = list(self.__dataFrame.columns)
+        lists.insert(0, headerNames)
+        return lists
 
     def getNumPyArray(self):
-        pass
+        return self.__dataFrame.to_numpy(dtype="float32")
 
     def getDataFrame(self):
         return self.__dataFrame
