@@ -56,7 +56,7 @@ class GUI:
             importFrame = ImportFrameXML(self, filePath)
             self.importFrameList.append(importFrame)
         else:
-            showerror(message=f"Your selected file '{filePath}' is not a csv file!")
+            showerror(message=f"Your selected file '{filePath}' is not a csv or xml file!")
 
     def updatePreview(self):
         importer = Importer()
