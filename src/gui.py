@@ -1,6 +1,7 @@
 from importer import Importer
 from importFrameCSV import ImportFrameCSV
 from importFrameXML import ImportFrameXML
+from exportWindow import ExportWindow
 from tkinter import *
 from tkinter.filedialog import *
 from tkinter.messagebox import *
@@ -30,6 +31,7 @@ class GUI:
 
         self.importFrameList = []
         self.isTableShown = False
+        self.dataFrame = None
 
         self.window.mainloop()
 
@@ -47,6 +49,10 @@ class GUI:
         
         self.importFrameList.remove(importFrame)
         self.updatePreview()
+
+    def onExportClick(self):
+        if self.dataFrame is not None:
+            ExportWindow(self.window, self.dataFrame)
 
     def importFile(self, filePath: str):
         if filePath.endswith(".csv"):
@@ -69,14 +75,17 @@ class GUI:
                 errorMessage = error.__class__.__name__ + ": " + str(error)
                 importFrame.setError(errorMessage)
 
-        dataFrame = importer.getDataFrame()
+        self.dataFrame = importer.getDataFrame()
 
         if self.isTableShown is False:
             self.isTableShown = True
             self.table.show()
 
-        if dataFrame is not None:
-            tableModel = TableModel(dataFrame)
+            self.exportButton = Button(self.window, text="Export", command=self.onExportClick)
+            self.exportButton.pack(pady=10)
+
+        if self.dataFrame is not None:
+            tableModel = TableModel(self.dataFrame)
             self.table.updateModel(tableModel)
             self.table.redraw()
 
