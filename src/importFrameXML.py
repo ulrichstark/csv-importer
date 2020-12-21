@@ -1,7 +1,8 @@
 import os
-from tkinter import *
-from tkinter.filedialog import *
-from tkinter.messagebox import *
+from tkinter import LabelFrame, StringVar, Label, Button
+from tkinter.constants import X
+from tkinter.filedialog import askopenfilename
+from tkinter.messagebox import showerror
 from importer import Importer
 
 

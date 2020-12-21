@@ -1,7 +1,6 @@
 from tkinter.constants import X
 import pandas
-from tkinter import Frame, Tk, Toplevel
-from tkinter import ttk
+from tkinter import Frame, Tk, Toplevel, ttk
 
 
 class ExportWindow:

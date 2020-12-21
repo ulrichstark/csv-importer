@@ -1,10 +1,11 @@
+from tkinter.constants import X
 from importer import Importer
 from importFrameCSV import ImportFrameCSV
 from importFrameXML import ImportFrameXML
 from exportWindow import ExportWindow
-from tkinter import *
-from tkinter.filedialog import *
-from tkinter.messagebox import *
+from tkinter import Tk, Button, Frame
+from tkinter.filedialog import askopenfilenames
+from tkinter.messagebox import showerror
 from pandastable import Table, TableModel
 
 

@@ -1,4 +1,5 @@
-from tkinter import *
+from tkinter import LabelFrame, StringVar, Label, Entry, Checkbutton, BooleanVar, Button
+from tkinter.constants import X
 from dialect import Dialect
 from importer import Importer
 
