@@ -9,8 +9,14 @@ class Exporter:
     def __init__(self, importer: Importer):
         self.__dataFrame = importer.getDataFrame()
 
-    def exportCSVFile(self, filePath: str, encoding: str, seperator: str):
-        self.__dataFrame.to_csv(filePath, encoding=encoding, sep=seperator)
+    def exportCSVFile(self, filePath: str, encoding: str, sepChar: str, quoteChar: str):
+        self.__dataFrame.to_csv(
+            filePath,
+            encoding=encoding,
+            sep=sepChar,
+            quotechar=quoteChar,
+            index=False
+        )
 
     def exportXMLFile(self, filePath: str, encoding: str):
         itemsElement = etree.Element("items")

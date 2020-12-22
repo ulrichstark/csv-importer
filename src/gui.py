@@ -1,12 +1,15 @@
 from tkinter.constants import X
+from exporter import Exporter
 from importer import Importer
 from importFrameCSV import ImportFrameCSV
 from importFrameXML import ImportFrameXML
+from util import formatExceptionMessage
 from exportWindow import ExportWindow
 from tkinter import Tk, Button, Frame
 from tkinter.filedialog import askopenfilenames
 from tkinter.messagebox import showerror
 from pandastable import Table, TableModel
+
 
 
 class GUI:
@@ -32,7 +35,6 @@ class GUI:
 
         self.importFrameList = []
         self.isTableShown = False
-        self.dataFrame = None
 
         self.window.mainloop()
 
@@ -52,8 +54,9 @@ class GUI:
         self.updatePreview()
 
     def onExportClick(self):
-        if self.dataFrame is not None:
-            ExportWindow(self.window, self.dataFrame)
+        if self.importer:
+            exporter = Exporter(self.importer)
+            ExportWindow(self.window, exporter)
 
     def importFile(self, filePath: str):
         if filePath.endswith(".csv"):
@@ -66,17 +69,17 @@ class GUI:
             showerror(message=f"Your selected file '{filePath}' is not a csv or xml file!")
 
     def updatePreview(self):
-        importer = Importer()
+        self.importer = Importer()
 
         for importFrame in self.importFrameList:
             try:
-                importFrame.importFile(importer)
+                importFrame.importFile(self.importer)
                 importFrame.clearError()
             except Exception as error:
-                errorMessage = error.__class__.__name__ + ": " + str(error)
+                errorMessage = formatExceptionMessage(error)
                 importFrame.setError(errorMessage)
 
-        self.dataFrame = importer.getDataFrame()
+        dataFrame = self.importer.getDataFrame()
 
         if self.isTableShown is False:
             self.isTableShown = True
@@ -85,8 +88,8 @@ class GUI:
             self.exportButton = Button(self.window, text="Export", command=self.onExportClick)
             self.exportButton.pack(pady=10)
 
-        if self.dataFrame is not None:
-            tableModel = TableModel(self.dataFrame)
+        if dataFrame is not None:
+            tableModel = TableModel(dataFrame)
             self.table.updateModel(tableModel)
             self.table.redraw()
 
