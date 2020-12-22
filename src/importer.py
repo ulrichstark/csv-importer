@@ -72,7 +72,7 @@ class Importer:
         return lists
 
     def getNumPyArray(self):
-        return self.__dataFrame.to_numpy(dtype="float32")
+        return self.__dataFrame.to_numpy()
 
     def getDataFrame(self):
         return self.__dataFrame
