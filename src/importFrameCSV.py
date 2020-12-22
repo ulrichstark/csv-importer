@@ -78,7 +78,10 @@ class ImportFrameCSV:
     def resetDialect(self):
         self.isTraceActive = False
 
-        self.dialect.guessFromFile(self.filePath)
+        try:
+            self.dialect.guessFromFile(self.filePath)
+        except:
+            pass
 
         self.varEncoding.set(self.dialect.encoding)
         self.varHasHeader.set(self.dialect.hasHeader)

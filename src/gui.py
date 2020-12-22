@@ -6,6 +6,7 @@ from importFrameXML import ImportFrameXML
 from util import formatExceptionMessage
 from exportWindow import ExportWindow
 from tkinter import Tk, Button, Frame
+from tkinter.font import Font
 from tkinter.filedialog import askopenfilenames
 from tkinter.messagebox import showerror
 from pandastable import Table, TableModel
@@ -18,12 +19,15 @@ class GUI:
         self.window.title("Excel 2.0")
         self.window.minsize(400, 400)
 
+        self.primaryButtonFont = Font(family="Helvetica", size=16)
+
         self.importButton = Button(
             self.window,
             text="Import file(s)",
+            font=self.primaryButtonFont,
             command=self.onImportButtonClick
         )
-        self.importButton.pack(pady=20)
+        self.importButton.pack(pady=10)
 
         self.importsFrame = Frame(self.window)
         self.importsFrame.pack(fill=X, padx=10, pady=5)
@@ -35,6 +39,7 @@ class GUI:
 
         self.importFrameList = []
         self.isTableShown = False
+        self.importer = Importer()
 
         self.window.mainloop()
 
@@ -54,9 +59,11 @@ class GUI:
         self.updatePreview()
 
     def onExportClick(self):
-        if self.importer:
+        if not self.importer.getDataFrame().empty:
             exporter = Exporter(self.importer)
             ExportWindow(self.window, exporter)
+        else:
+            showerror(title="Nothing to export", message="You have nothing without errors imported!")
 
     def importFile(self, filePath: str):
         if filePath.endswith(".csv"):
@@ -66,10 +73,10 @@ class GUI:
             importFrame = ImportFrameXML(self, filePath)
             self.importFrameList.append(importFrame)
         else:
-            showerror(message=f"Your selected file '{filePath}' is not a csv or xml file!")
+            showerror(title="Not a CSV or XML File", message=f"Your selected file '{filePath}' is not a csv or xml file!")
 
     def updatePreview(self):
-        self.importer = Importer()
+        self.importer.reset()
 
         for importFrame in self.importFrameList:
             try:
@@ -81,14 +88,19 @@ class GUI:
 
         dataFrame = self.importer.getDataFrame()
 
-        if self.isTableShown is False:
-            self.isTableShown = True
-            self.table.show()
-
-            self.exportButton = Button(self.window, text="Export", command=self.onExportClick)
-            self.exportButton.pack(pady=10)
-
         if dataFrame is not None:
+            if not self.isTableShown:
+                self.isTableShown = True
+                self.table.show()
+
+                self.exportButton = Button(
+                    self.window,
+                    text="Export",
+                    font=self.primaryButtonFont,
+                    command=self.onExportClick,
+                )
+                self.exportButton.pack(pady=10)
+
             tableModel = TableModel(dataFrame)
             self.table.updateModel(tableModel)
             self.table.redraw()
