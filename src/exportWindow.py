@@ -1,6 +1,6 @@
 from tkinter.constants import X
 from tkinter.filedialog import asksaveasfilename
-from tkinter import Button, Frame, Tk, Toplevel, ttk
+from tkinter import Button, Entry, Frame, Label, StringVar, Tk, Toplevel, ttk
 from tkinter.messagebox import showerror, showinfo
 
 from exporter import Exporter
@@ -16,19 +16,43 @@ class ExportWindow:
         self.toplevel.title("Export as...")
         self.toplevel.minsize(300, 200)
 
+        self.varEncoding = StringVar(value="utf-8")
+        self.varSepChar = StringVar(value=",")
+        self.varQuoteChar = StringVar(value="\"")
+
         self.tabs = ttk.Notebook(self.toplevel)
 
         self.frameCSV = Frame(self.tabs)
         self.tabs.add(self.frameCSV, text="CSV")
 
+        self.labelEncodingCSV = Label(self.frameCSV, text="Encoding: ")
+        self.labelEncodingCSV.grid(row=0, column=0, sticky="E")
+        self.entryEncodingCSV = Entry(self.frameCSV, width=10, textvariable=self.varEncoding)
+        self.entryEncodingCSV.grid(row=0, column=1, sticky="W")
+
+        self.labelSepChar = Label(self.frameCSV, text="Seperator Character: ")
+        self.labelSepChar.grid(row=1, column=0, sticky="E")
+        self.entrySepChar = Entry(self.frameCSV, width=4, textvariable=self.varSepChar)
+        self.entrySepChar.grid(row=1, column=1, sticky="W")
+
+        self.labelQuoteChar = Label(self.frameCSV, text="Quote Character: ")
+        self.labelQuoteChar.grid(row=2, column=0, sticky="E")
+        self.entryQuoteChar = Entry(self.frameCSV, width=4, textvariable=self.varQuoteChar)
+        self.entryQuoteChar.grid(row=2, column=1, sticky="W")
+
         self.buttonExportCSV = Button(self.frameCSV, text="Export", command=self.onExportCSV)
-        self.buttonExportCSV.grid(row=0, column=0, padx=6, pady=6)
+        self.buttonExportCSV.grid(row=3, column=0, padx=6, pady=6)
         
         self.frameXML = Frame(self.tabs)
         self.tabs.add(self.frameXML, text="XML")
 
+        self.labelEncodingXML = Label(self.frameXML, text="Encoding: ")
+        self.labelEncodingXML.grid(row=0, column=0, sticky="E")
+        self.labelEncodingXML = Entry(self.frameXML, width=10, textvariable=self.varEncoding)
+        self.labelEncodingXML.grid(row=0, column=1, sticky="W")
+
         self.buttonExportXML = Button(self.frameXML, text="Export", command=self.onExportXML)
-        self.buttonExportXML.grid(row=0, column=0, padx=6, pady=6)
+        self.buttonExportXML.grid(row=1, column=0, padx=6, pady=6)
 
         self.tabs.pack(fill=X, pady=6)
 
@@ -43,9 +67,9 @@ class ExportWindow:
         )
 
         if filePath:
-            encoding = "utf-8"
-            sepChar = ","
-            quoteChar = "\""
+            encoding = self.varEncoding.get()
+            sepChar = self.varSepChar.get()
+            quoteChar = self.varQuoteChar.get()
 
             try:
                 self.exporter.exportCSVFile(filePath, encoding, sepChar, quoteChar)
@@ -67,7 +91,7 @@ class ExportWindow:
         )
 
         if filePath:
-            encoding = "utf-8"
+            encoding = self.varEncoding.get()
 
             try:
                 self.exporter.exportXMLFile(filePath, encoding)
