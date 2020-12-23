@@ -59,7 +59,7 @@ class ImportFrameXML:
             importer.importXMLFile(self.xmlFilePath, self.xslFilePath)
 
     def setupVarTracer(self):
-        varTracer = lambda var, index, mode: self.onFieldChange()
+        varTracer = lambda *_: self.onFieldChange()
 
         self.varXSLFilePath.trace("w", varTracer)
     

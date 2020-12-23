@@ -62,7 +62,7 @@ class ImportFrameCSV:
         importer.importCSVFile(self.filePath, self.dialect)
 
     def setupVarTracer(self):
-        varTracer = lambda var, index, mode: self.onFieldChange()
+        varTracer = lambda *_: self.onFieldChange()
         self.varEncoding.trace("w", varTracer)
         self.varHasHeader.trace("w", varTracer)
         self.varSepChar.trace("w", varTracer)
