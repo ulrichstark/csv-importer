@@ -5,6 +5,15 @@ import chardet
 
 
 def encoding(filePath: str):
+    """
+    This method guesses the encoding of a file
+
+    Args:
+        filePath (str): The filepath of the file to guess from
+
+    Returns:
+        The guessed encoding as string
+    """
     with open(filePath, "rb") as testFile:
         testFileContent = testFile.read()
         chardetAnswer = chardet.detect(testFileContent)
@@ -12,10 +21,28 @@ def encoding(filePath: str):
 
 
 def hasHeader(sample: str):
+    """
+    This method guesses whether a CSV formatted string appears to have a header
+
+    Args:
+        sample (str): a CSV formatted string to guess from
+
+    Returns:
+        A boolean specifying whether the sample appears to have a header
+    """
     return csv.Sniffer().has_header(sample)
 
 
 def dialect(sample: str):
+    """
+    This method guesses the CSV dialect of a CSV formatted string
+
+    Args:
+        sample (str): a CSV formatted string to guess from
+
+    Returns:
+        The guessed dialect as an object
+    """
     return csv.Sniffer().sniff(sample)
 
 regexGeoCoord = re.compile(r"^(N|S)?0*\d{1,2}°0*\d{1,2}(′|')0*\d{1,2}\.\d*(″|\")(?(1)|(N|S)) (E|W)?0*\d{1,2}°0*\d{1,2}(′|')0*\d{1,2}\.\d*(″|\")(?(5)|(E|W))$")
@@ -29,6 +56,25 @@ regexInteger = re.compile(r"^[+-]?\d+$")
 regexBoolean = re.compile(r"^(wahr|falsch|ja|nein|yes|no|true|false|t|f|1|0)$", flags=re.IGNORECASE)
 
 def dataType(sample: str):
+    """
+    This method guesses the datatype of a supplied text
+
+    Args:
+        sample (str): The text sample to guess from
+
+    Returns:
+        - "GeoCoord" if the sample appears to be geo coordinates
+        - "Email" if the sample appears to be an email address
+        - "URL" if the sample appears to be an URL
+        - "Datetime" if the sample appears to be a date combined with time
+        - "Date" if the sample appears to be a date
+        - "Time" if the sample appears to be a time
+        - "Float" if the sample appears to be a number with floating point
+        - "Integer" if the sample appears to be a number without floating point
+        - "Boolean" if the sample appears to be a boolean expression
+
+        defaults to "Text"
+    """
     if regexGeoCoord.match(sample):
         return "GeoCoord"
 
@@ -59,6 +105,17 @@ def dataType(sample: str):
     return "Text"
 
 def headerNames(dataFrame: pandas.DataFrame):
+    """
+    This method guesses the headernames by guessing the datatype of columns and
+    incrementing a datatype specific counter
+
+    Args:
+        dataFrame (pandas.DataFrame):
+            The source for the columns and their content
+
+    Returns:
+        an array of guessed names for the headers
+    """
     headerNameCount = {}
     newColumns = {}
 
