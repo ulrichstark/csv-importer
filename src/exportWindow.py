@@ -8,6 +8,9 @@ from util import formatExceptionMessage
 
 
 class ExportWindow:
+    """
+    Secondary window used to export the imported rows to a CSV or XML file
+    """
     def __init__(self, window: Tk, exporter: Exporter):
         self.window = window
         self.exporter = exporter
@@ -57,6 +60,9 @@ class ExportWindow:
         self.tabs.pack(fill=X, pady=6)
 
     def onExportCSV(self):
+        """
+        Called when the "Export" button was clicked in the "CSV" tab
+        """
         filePath = asksaveasfilename(
             parent=self.toplevel,
             defaultextension=".csv",
@@ -67,6 +73,7 @@ class ExportWindow:
         )
 
         if filePath:
+            # only continue if the user selected a filePath
             encoding = self.varEncoding.get()
             sepChar = self.varSepChar.get()
             quoteChar = self.varQuoteChar.get()
@@ -81,6 +88,9 @@ class ExportWindow:
 
 
     def onExportXML(self):
+        """
+        Called when the "Export" button was clicked in the "XML" tab
+        """
         filePath = asksaveasfilename(
             parent=self.toplevel,
             defaultextension=".xml",
@@ -91,6 +101,7 @@ class ExportWindow:
         )
 
         if filePath:
+            # only continue if the user selected a filePath
             encoding = self.varEncoding.get()
 
             try:

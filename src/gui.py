@@ -14,6 +14,9 @@ from pandastable import Table, TableModel
 
 
 class GUI:
+    """
+    Main window used to import CSV & XML files, change parameters and view the preview
+    """
     def __init__(self):
         self.window = Tk()
         self.window.title("Excel 2.0")
@@ -44,6 +47,9 @@ class GUI:
         self.window.mainloop()
 
     def onImportButtonClick(self):
+        """
+        Called when the "Import file(s)" button was clicked
+        """
         filePathList = askopenfilenames(initialdir="../example")
 
         for filePath in filePathList:
@@ -53,12 +59,18 @@ class GUI:
             self.updatePreview()
 
     def onRemoveImportFrame(self, importFrame):
+        """
+        Called when the "Remove Import" button of one import was clicked
+        """
         importFrame.frame.destroy()
         
         self.importFrameList.remove(importFrame)
         self.updatePreview()
 
     def onExportClick(self):
+        """
+        Called when the "Export" button was clicked
+        """
         if not self.importer.getDataFrame().empty:
             exporter = Exporter(self.importer)
             ExportWindow(self.window, exporter)
@@ -66,6 +78,9 @@ class GUI:
             showerror(title="Nothing to export", message="You have nothing without errors imported!")
 
     def importFile(self, filePath: str):
+        """
+        Called for every file the user selected to import
+        """
         if filePath.endswith(".csv"):
             importFrame = ImportFrameCSV(self, filePath)
             self.importFrameList.append(importFrame)
@@ -76,9 +91,15 @@ class GUI:
             showerror(title="Not a CSV or XML File", message=f"Your selected file '{filePath}' is not a csv or xml file!")
 
     def updatePreview(self):
+        """
+        Called when the imports changed to update the preview
+
+        Can be after the user changed parameters or the user added/removed an import
+        """
         self.importer.reset()
 
         for importFrame in self.importFrameList:
+            # Loop through all imports
             try:
                 importFrame.importFile(self.importer)
                 importFrame.clearError()
@@ -86,10 +107,11 @@ class GUI:
                 errorMessage = formatExceptionMessage(error)
                 importFrame.setError(errorMessage)
 
-        dataFrame = self.importer.getDataFrame()
+        dataFrame = self.importer.getDataFrame() # get the merged DataFrame
 
         if dataFrame is not None:
             if not self.isTableShown:
+                # show Table if still hidden
                 self.isTableShown = True
                 self.table.show()
 

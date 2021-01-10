@@ -6,6 +6,12 @@ from dialect import Dialect
 
 
 class Importer:
+    """
+    Class used to dynamically add csv or xml files to import.
+    Importer merges them all into an internal DataFrame.
+    Can be resetted for future use with new clean internal state.
+    Also offers methods to convert merged state to dictionary, lists of lists, numpy array 
+    """
     __dataFrame: pandas.DataFrame
     __headerSeen: bool
 
@@ -13,6 +19,10 @@ class Importer:
         self.reset()
 
     def importXMLFile(self, xmlFilePath: str, xslFilePath: str, xslParameters = {}):
+        """
+        Imports a xml file by using its filePath along the filePath to its corresponding xsl file for transforming.
+        xslParameters can also be supplied to change parameter values of the xsl transformer.
+        """
         xmlFile = etree.parse(xmlFilePath)
         xslFile = etree.parse(xslFilePath)
         transformer = etree.XSLT(xslFile)
@@ -28,6 +38,10 @@ class Importer:
 
 
     def importCSVFile(self, filePathOrBuffer: str, dialect: Dialect):
+        """
+        Imports a csv file by using its filePath or a buffer containing a csv-formatted string.
+        Use the dialect parameter to further specify the format of the csv file/string.
+        """
         header = "infer" if dialect.hasHeader else None
         dataFrame = pandas.read_csv(
             filePathOrBuffer,
@@ -38,10 +52,12 @@ class Importer:
         )
 
         if dialect.hasHeader is False:
+            # guess header names if csv file has none
             newColumns = guess.headerNames(dataFrame)
             dataFrame.rename(columns=newColumns, inplace=True)
 
         if self.__dataFrame.empty:
+            # just set the new imported DataFrame if no internal DataFrame is set yet
             self.__dataFrame = dataFrame
         else:
             if len(self.__dataFrame.columns) is not len(dataFrame.columns):
@@ -60,6 +76,7 @@ class Importer:
             self.__dataFrame = self.__dataFrame.append(dataFrame)
 
         if not self.__headerSeen and dialect.hasHeader:
+            # did we get a valid header from the currently imported file for the first time?
             self.__headerSeen = True
 
     def getDictionary(self):
@@ -78,5 +95,8 @@ class Importer:
         return self.__dataFrame
 
     def reset(self):
+        """
+        Reset the internal state to restart importing
+        """
         self.__dataFrame = pandas.DataFrame()
         self.__headerSeen = False

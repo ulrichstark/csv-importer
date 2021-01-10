@@ -5,6 +5,9 @@ from importer import Importer
 
 
 class ImportFrameCSV:
+    """
+    Frame that offers controls and parameters for one csv import
+    """
     def __init__(self, gui, filePath: str):
         self.gui = gui
         self.filePath = filePath
@@ -59,6 +62,9 @@ class ImportFrameCSV:
         self.setupVarTracer()
 
     def importFile(self, importer: Importer):
+        """
+        Gets called by main window to add the import to the merged imports
+        """
         importer.importCSVFile(self.filePath, self.dialect)
 
     def setupVarTracer(self):
@@ -81,6 +87,11 @@ class ImportFrameCSV:
         try:
             self.dialect.guessFromFile(self.filePath)
         except:
+            """
+            just ignore if guessing went wrong.
+            the user would not benefit from an error message here and
+            the dialect will be just default values
+            """
             pass
 
         self.varEncoding.set(self.dialect.encoding)

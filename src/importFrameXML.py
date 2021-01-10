@@ -7,6 +7,9 @@ from importer import Importer
 
 
 class ImportFrameXML:
+    """
+    Frame that offers controls and parameters for one xml import
+    """
     def __init__(self, gui, filePath: str):
         self.gui = gui
         self.xmlFilePath = filePath
@@ -53,6 +56,9 @@ class ImportFrameXML:
                 showerror(message=f"Your selected file '{filePath}' is not a xsl file!")
 
     def importFile(self, importer: Importer):
+        """
+        Gets called by main window to add the import to the merged imports
+        """
         if self.xslFilePath is None:
             raise ValueError("No XSL File specified!")
         else:
