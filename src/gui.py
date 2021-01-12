@@ -53,9 +53,9 @@ class GUI:
         filePathList = askopenfilenames(
             initialdir="../example",
             filetypes=[
+                ("All files", "*.*")
                 ("Comma-Seperated Values", "*.csv"),
                 ("Extensible Markup Language", "*.xml"),
-                ("All files", "*.*")
             ]
         )
 

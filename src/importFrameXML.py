@@ -45,7 +45,13 @@ class ImportFrameXML:
         self.setupVarTracer()
 
     def onSelectXSLFile(self):
-        filePath = askopenfilename(initialdir="../example")
+        filePath = askopenfilename(
+            initialdir="../example",
+            filetypes=[
+                ("Extensible Stylesheet Language", "*.xsl"),
+                ("All files", "*.*")
+            ]
+        )
 
         if filePath is not None and len(filePath) > 0:
             if filePath.endswith(".xsl"):
