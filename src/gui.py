@@ -50,7 +50,14 @@ class GUI:
         """
         Called when the "Import file(s)" button was clicked
         """
-        filePathList = askopenfilenames(initialdir="../example")
+        filePathList = askopenfilenames(
+            initialdir="../example",
+            filetypes=[
+                ("Comma-Seperated Values", "*.csv"),
+                ("Extensible Markup Language", "*.xml"),
+                ("All files", "*.*")
+            ]
+        )
 
         for filePath in filePathList:
             self.importFile(filePath)
